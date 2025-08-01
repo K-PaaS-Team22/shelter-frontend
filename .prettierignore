@@ -1,0 +1,6 @@
+/.expo
+node_modules
+.nvmrc
+.vscode
+README.md
+expo-env.d.ts

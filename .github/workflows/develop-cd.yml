@@ -1,0 +1,113 @@
+name: Build Development
+
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  EAS_PROJECT_ID: f345cdac-62b0-41d8-b7a4-5450aca69da5
+  ENV_FILE: ${{ secrets.ENV_FILE }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        type: choice
+        description: "Build Platform"
+        required: true
+        options:
+          - ios
+          - android
+          - both
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for EXPO_TOKEN
+        run: |
+          if [ -z "${{ env.EXPO_TOKEN }}" ]; then
+            echo "You must provide an EXPO_TOKEN secret linked to this project's Expo account in this repo's secrets. Learn more: https://docs.expo.dev/eas-update/github-actions"
+            exit 1
+          fi
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ env.EXPO_TOKEN }}
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Create .env file
+        run: echo "${{ env.ENV_FILE }}" >> .env
+
+      - name: 🔧 Initialize EAS Project
+        run: yes | eas init --id ${{ env.EAS_PROJECT_ID }}
+
+      - name: 🚀 Create Development Build - iOS
+        if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both' }}
+        id: ios-build
+        uses: expo/expo-github-action/preview@v8
+        with:
+          command: eas build --profile preview --platform ios --clear-cache --non-interactive --no-wait
+          comment: false
+
+      - name: Get iOS Build URL
+        if: ${{ github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both' }}
+        id: ios-build-url
+        run: |
+          BUILD_URL=$(eas build:list --platform ios --limit 1 --non-interactive | grep -o 'https://expo.dev/accounts/.*/builds/.*' | head -n 1)
+          echo "ios_url=$BUILD_URL" >> $GITHUB_OUTPUT
+
+      - name: 🚀 Create Development Build - Android
+        if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both' }}
+        id: android-build
+        uses: expo/expo-github-action/preview@v8
+        with:
+          command: eas build --profile preview --platform android --clear-cache --non-interactive --no-wait
+          comment: false
+
+      - name: Get Android Build URL
+        if: ${{ github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both' }}
+        id: android-build-url
+        run: |
+          BUILD_URL=$(eas build:list --platform android --limit 1 --non-interactive | grep -o 'https://expo.dev/accounts/.*/builds/.*' | head -n 1)
+          echo "android_url=$BUILD_URL" >> $GITHUB_OUTPUT
+
+      - name: 💬 Notify Slack
+        if: success()
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload: |
+            {
+              "text": "Native 앱 Preview 신규 버전 생성 알림",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🎉 🎉 Native 앱 Development 빌드가 완료되었어요!\n\nBranch: ${{ github.ref_name }}${{ (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both') && '\niOS Download: ' }}${{ (github.event.inputs.platform == 'ios' || github.event.inputs.platform == 'both') && steps.ios-build-url.outputs.ios_url || '' }}${{ (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both') && '\nAndroid Download: ' }}${{ (github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both') && steps.android-build-url.outputs.android_url || '' }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

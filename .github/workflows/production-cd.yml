@@ -1,0 +1,83 @@
+name: Build Production
+
+permissions:
+  pull-requests: write
+  contents: write
+
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
+  APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+  EAS_PROJECT_ID: ${{ secrets.EAS_PROJECT_ID }}
+  IOS_BUNDLE_ID: ${{ secrets.IOS_BUNDLE_ID }}
+  ANDROID_PACKAGE_NAME: ${{ secrets.ANDROID_PACKAGE_NAME }}
+
+on:
+  workflow_dispatch:
+  # push:
+  #   branches: [main]
+
+jobs:
+  check-labels:
+    uses: ./.github/workflows/label-checker.yml
+    with:
+      labels: ["build-native"]
+
+  prepare:
+    needs: [check-labels]
+    if: needs.check-labels.outputs.has_required_labels == 'true'
+    uses: ./.github/workflows/prepare.yml
+
+  build:
+    needs: [prepare]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🏗 Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ env.EXPO_TOKEN }}
+
+      - name: Setup App Store credentials
+        run: |
+          echo ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT }} | base64 -d > pc-api-key.json
+          echo ${{ env.APP_STORE_CONNECT_KEY }} | base64 -d > app-store-key.p8
+
+      - name: Build and Submit
+        id: build_submit
+        run: |
+          eas build --platform all --profile production --non-interactive
+          eas submit --platform all --profile production --non-interactive
+
+          # autoIncrement로 업데이트된 버전 가져오기
+          NEW_VERSION=$(node -p "require('./app.json').expo.version")
+          echo "new_version=${NEW_VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Commit Version Changes
+        if: success()
+        run: |
+          git config --global user.email "moeum[bot]@users.noreply.github.com"
+          git config --global user.name "moeum[bot]"
+          git add app.json
+          git commit -m "chore: update version to ${NEW_VERSION} [skip ci]"
+          git tag "v${NEW_VERSION}"
+          git push --follow-tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify Slack
+        uses: ./.github/workflows/notify-slack.yml
+        with:
+          title: 신규 버전 생성 알림
+          message: |
+            🎉 Native 앱 스토어 신규 버전이 심사 대기중입니다!
+            PR: ${{ github.event.pull_request.html_url }}
+            Version: ${{ steps.version.outputs.new_version }}
+          webhook_url: ${{ env.SLACK_WEBHOOK_URL }}

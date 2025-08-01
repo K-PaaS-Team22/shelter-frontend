@@ -1,0 +1,10 @@
+{
+  "spaces": 2,
+  "modelPackage": "model",
+  "apiPackage": "api",
+  "supportsES6": true,
+  "withNodeImports": false,
+  "useSingleRequestParameter": true,
+  "enumNameSuffix": "",
+  "withSeparateModelsAndApi": true
+}

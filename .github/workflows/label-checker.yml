@@ -1,0 +1,52 @@
+name: Label Checker Action
+
+on:
+  workflow_call:
+    inputs:
+      label:
+        description: "Array of required labels"
+        required: true
+        type: string
+    outputs:
+      has_required_label:
+        description: "Whether PR has the required label"
+        value: ${{ jobs.check-label.outputs.has_required_label }}
+
+jobs:
+  check-label:
+    runs-on: ubuntu-latest
+    outputs:
+      has_required_label: ${{ steps.check-label.outputs.has_required_label }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check Label
+        id: check-label
+        run: |
+          # PR 번호 찾기 (--json 대신 기본 출력 사용)
+          PR_NUMBER=$(gh pr list --base main --head ${{ github.sha }} --limit 1 --state open | cut -f1)
+
+          if [ ! -z "$PR_NUMBER" ]; then
+            echo "Found PR: $PR_NUMBER"
+            
+            # 라벨 가져오기 (--json 대신 기본 출력 사용)
+            LABELS=$(gh pr view $PR_NUMBER --label)
+            echo "PR Labels: $LABELS"
+            
+            # 필요한 라벨 확인
+            if echo "$LABELS" | grep -q "${{ inputs.label }}"; then
+              echo "has_required_label=true" >> $GITHUB_OUTPUT
+              echo "Required label '${{ inputs.label }}' found!"
+            else
+              echo "has_required_label=false" >> $GITHUB_OUTPUT
+              echo "Missing required label: ${{ inputs.label }}"
+            fi
+          else
+            echo "No PR found"
+            echo "has_required_label=false" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
