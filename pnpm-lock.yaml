@@ -107,6 +107,9 @@ importers:
       react-native-global-props:
         specifier: ^1.1.5
         version: 1.1.5(react-native@0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0))(react@19.0.0)
+      react-native-maps:
+        specifier: ^1.25.3
+        version: 1.25.3(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0))(react@19.0.0)
       react-native-reanimated:
         specifier: ~3.17.5
         version: 3.17.5(@babel/core@7.26.0)(react-native@0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0))(react@19.0.0)
@@ -1467,6 +1470,9 @@ packages:
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
+
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
@@ -4492,6 +4498,17 @@ packages:
     peerDependencies:
       react: '*'
       react-native: '*'
+
+  react-native-maps@1.25.3:
+    resolution: {integrity: sha512-Mi/uPvBBWqEJYj/wNIM40bIf7tnVWm8dM52X6LWiiN7cajozXtydKoVeuShHpK07cvi565maY+3QiB5yTxmb0w==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      react: '>= 18.3.1'
+      react-native: '>= 0.76.0'
+      react-native-web: '>= 0.11'
+    peerDependenciesMeta:
+      react-native-web:
+        optional: true
 
   react-native-reanimated@3.17.5:
     resolution: {integrity: sha512-SxBK7wQfJ4UoWoJqQnmIC7ZjuNgVb9rcY5Xc67upXAFKftWg0rnkknTw6vgwnjRcvYThrjzUVti66XoZdDJGtw==}
@@ -7520,6 +7537,8 @@ snapshots:
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.6': {}
+
+  '@types/geojson@7946.0.16': {}
 
   '@types/graceful-fs@4.1.9':
     dependencies:
@@ -11217,6 +11236,14 @@ snapshots:
     dependencies:
       react: 19.0.0
       react-native: 0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0)
+
+  react-native-maps@1.25.3(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0))(react@19.0.0):
+    dependencies:
+      '@types/geojson': 7946.0.16
+      react: 19.0.0
+      react-native: 0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0)
+    optionalDependencies:
+      react-native-web: 0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
   react-native-reanimated@3.17.5(@babel/core@7.26.0)(react-native@0.79.5(@babel/core@7.26.0)(@types/react@18.3.18)(react@19.0.0))(react@19.0.0):
     dependencies:
