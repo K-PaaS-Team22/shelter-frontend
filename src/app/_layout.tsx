@@ -1,18 +1,21 @@
-import { SplashScreen, Tabs } from "expo-router";
-import { useSystemFont } from "@moeum/common/hooks/useSystemFont";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-SplashScreen.preventAutoHideAsync();
+import { Stack } from "expo-router";
+import { StatusBar, StyleSheet } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
-  useSystemFont();
-
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Tabs initialRouteName="index" screenOptions={{ headerShown: false }}>
-        <Tabs.Screen name="index" options={{ title: "home" }} />
-        <Tabs.Screen name="setting" options={{ title: "setting" }} />
-      </Tabs>
-    </SafeAreaView>
+    <SafeAreaProvider style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}>
+        <Stack.Screen name="index" options={{ title: "LoginScreen" }} />
+      </Stack>
+    </SafeAreaProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF"
+  }
+});
