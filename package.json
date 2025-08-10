@@ -28,6 +28,7 @@
     "@babel/runtime": "^7.26.0",
     "@expo/metro-runtime": "~5.0.4",
     "@expo/vector-icons": "^14.1.0",
+    "@hookform/resolvers": "^5.2.1",
     "@openapitools/openapi-generator-cli": "^2.15.3",
     "@react-native-community/netinfo": "11.4.1",
     "@react-navigation/bottom-tabs": "^7.0.0",

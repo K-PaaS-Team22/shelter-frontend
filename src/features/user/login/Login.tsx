@@ -14,7 +14,8 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Input from "@moeum/common/components/Input";
 import Button from "@moeum/common/components/Button";
-const Login = () => {
+
+export default function Login() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
@@ -91,7 +92,7 @@ const Login = () => {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   content: {
@@ -114,5 +115,3 @@ const styles = StyleSheet.create({
     textAlign: "center"
   }
 });
-
-export default Login;
