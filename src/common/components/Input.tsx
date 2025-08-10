@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet, Platform } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SvgProps } from "react-native-svg";
 
 interface InputProps {
