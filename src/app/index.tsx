@@ -1,9 +1,5 @@
-import { Text, View } from "react-native";
+import Login from "@moeum/features/user/login/Login";
 
-export default function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
+export default function LoginScreen() {
+  return <Login />;
 }

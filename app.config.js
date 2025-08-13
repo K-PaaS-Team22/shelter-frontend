@@ -48,7 +48,8 @@ export default {
       "expo-build-properties"
     ],
     experiments: {
-      typedRoutes: true
+      typedRoutes: true,
+      reactCanary: true
     },
     extra: {
       router: {
