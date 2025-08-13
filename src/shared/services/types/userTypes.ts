@@ -1,6 +1,8 @@
 export interface SignUpInfo {
-  userId: string;
+  memberId: string;
   password: string;
   confirmPassword: string;
-  nickname: string;
+  memberName: string;
+  gender: string;
+  birthday: string;
 }

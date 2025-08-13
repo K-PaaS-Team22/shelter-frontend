@@ -95,23 +95,8 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  content: {
-    flexGrow: 1,
-    justifyContent: "center",
-    paddingHorizontal: 20
-  },
-  logoContainer: {
-    alignItems: "center"
-  },
-  logoText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#3A7DFF",
-    marginTop: 10
-  },
-  guestLoginText: {
-    color: "#494F54",
-    fontSize: 14,
-    textAlign: "center"
-  }
+  content: { flexGrow: 1, justifyContent: "center", paddingHorizontal: 20 },
+  logoContainer: { alignItems: "center" },
+  logoText: { fontSize: 24, fontWeight: "bold", color: "#3A7DFF", marginTop: 10 },
+  guestLoginText: { color: "#494F54", fontSize: 14, textAlign: "center" }
 });

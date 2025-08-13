@@ -1,8 +1,7 @@
 import { z } from "zod";
-
 export const signUpSchema = z
   .object({
-    userId: z
+    memberId: z
       .string()
       .nonempty("아이디를 입력해주세요.")
       .min(8, "아이디는 최소 8자 이상이어야 합니다.")
@@ -19,7 +18,9 @@ export const signUpSchema = z
         "영문자와 특수문자를 모두 포함해야 합니다."
       ),
     confirmPassword: z.string().nonempty("비밀번호 확인을 입력해주세요."),
-    nickname: z.string().nonempty("닉네임을 입력해주세요.")
+    memberName: z.string().nonempty("이름을 입력해주세요."),
+    gender: z.string().nonempty("성별을 선택해주세요."),
+    birthday: z.string().nonempty("생년월일을 입력해주세요.")
   })
   .refine(data => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
