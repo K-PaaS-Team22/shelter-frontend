@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -10,12 +10,13 @@ import {
 } from "react-native";
 import Button from "@moeum/common/components/Button";
 import Header from "@moeum/common/components/Header";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { signUpSchema } from "@moeum/shared/services/schemas/signUpSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import FormInput from "./component/FormInput";
 import FormCheckBox from "./component/FormCheckBox";
 import BirthdayPicker from "./component/BirthdayPicker";
+import { useSignUp } from "@moeum/shared/services/mutations/useUser";
 
 export default function SignUp() {
   const methods = useForm({
@@ -32,8 +33,14 @@ export default function SignUp() {
 
   const { handleSubmit } = methods;
 
+  const { mutate: signUp } = useSignUp(() => {
+    console.log("회원가입 성공");
+  });
+
   const onSubmit = (data: any) => {
-    console.log("회원가입 데이터:", data);
+    const { confirmPassword, ...payload } = data;
+    signUp(payload);
+    console.log(payload);
   };
 
   return (
