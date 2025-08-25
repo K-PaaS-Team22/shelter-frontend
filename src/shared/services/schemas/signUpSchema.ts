@@ -9,7 +9,7 @@ export const signUpSchema = z
         /^(?=.*[A-Za-z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\-=/\\]).+$/,
         "영문자와 특수문자를 모두 포함해야 합니다."
       ),
-    password: z
+    memberPassword: z
       .string()
       .nonempty("비밀번호를 입력해주세요.")
       .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
@@ -22,7 +22,7 @@ export const signUpSchema = z
     gender: z.string().nonempty("성별을 선택해주세요."),
     birthday: z.string().nonempty("생년월일을 입력해주세요.")
   })
-  .refine(data => data.password === data.confirmPassword, {
+  .refine(data => data.memberPassword === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "입력하신 비밀번호와 일치하지 않습니다."
   });

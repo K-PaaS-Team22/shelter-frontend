@@ -44,7 +44,7 @@ export default function BirthdayPicker({ name }: Props) {
             )}
           </Text>
         </TouchableOpacity>
-        {errors[name] && (
+        {errors[name] && !selectedDate && (
           <Text style={{ color: "#FF0000", fontSize: 12, padding: 4 }}>
             {errors[name]?.message as string}
           </Text>

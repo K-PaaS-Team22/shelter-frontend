@@ -1,1 +1,0 @@
-# shared > services > queries

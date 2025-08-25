@@ -23,7 +23,7 @@ export default function SignUp() {
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       memberId: "",
-      password: "",
+      memberPassword: "",
       confirmPassword: "",
       memberName: "",
       birthday: "",
@@ -68,7 +68,7 @@ export default function SignUp() {
                   iconName="account-outline"
                 />
                 <FormInput
-                  name="password"
+                  name="memberPassword"
                   placeholder="비밀번호 입력 (8~16자)"
                   iconName="lock-outline"
                   secure
