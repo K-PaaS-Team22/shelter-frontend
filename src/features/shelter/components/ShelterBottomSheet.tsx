@@ -27,7 +27,6 @@ const ShelterBottomSheet: React.FC<ShelterBottomSheetProps> = ({
       </Text>
       <View style={styles.shelterInfo}>
         <Text style={styles.distance}>{item.distance.toFixed(1)}km</Text>
-        <Text style={styles.capacity}>수용인원: {item.USE_PSBL_NMPR}명</Text>
       </View>
     </TouchableOpacity>
   );
@@ -35,7 +34,7 @@ const ShelterBottomSheet: React.FC<ShelterBottomSheetProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>근처 쉼터 ({shelters.length}개)</Text>
+        <Text style={styles.title}>근처 무더위 쉼터 ({shelters.length}개)</Text>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
           <Text style={styles.closeButtonText}>닫기</Text>
         </TouchableOpacity>
@@ -102,12 +101,12 @@ const styles = StyleSheet.create({
   shelterName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#2196F3", // 파란 굵은 글씨
+    color: "#006CFF",
     marginBottom: 4
   },
   shelterAddress: {
     fontSize: 14,
-    color: "#666", // 회색 글씨
+    color: "#AAAAAA",
     marginBottom: 8
   },
   shelterInfo: {
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
   },
   distance: {
     fontSize: 12,
-    color: "#999"
+    color: "#000000"
   },
   capacity: {
     fontSize: 12,

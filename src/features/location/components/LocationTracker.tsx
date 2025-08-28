@@ -4,6 +4,7 @@ import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { useForegroundPermissions } from "expo-location";
 import { Shelter, fetchNearbyShelters, ShelterBottomSheet } from "../../shelter";
+import { Weather, fetchTodayWeather, WeatherDetailModal } from "../../weather";
 
 interface Location {
   latitude: number;
@@ -23,6 +24,10 @@ const LocationTracker: React.FC = () => {
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [isBottomSheetVisible, setIsBottomSheetVisible] = useState(false);
   const [isLoadingShelters, setIsLoadingShelters] = useState(false);
+
+  const [weather, setWeather] = useState<Weather | null>(null);
+  const [isWeatherModalVisible, setIsWeatherModalVisible] = useState(false);
+  const [isLoadingWeather, setIsLoadingWeather] = useState(false);
 
   const [locationPermission, requestPermission] = useForegroundPermissions();
 
@@ -45,8 +50,11 @@ const LocationTracker: React.FC = () => {
             longitudeDelta: 0.01
           });
 
-          // 위치를 가져온 후 근처 쉼터 조회
-          await fetchNearbySheltersData(latitude, longitude);
+          // 위치를 가져온 후 근처 쉼터와 날씨 조회
+          await Promise.all([
+            fetchNearbySheltersData(latitude, longitude),
+            fetchWeatherData(latitude, longitude)
+          ]);
         }
       } catch (error) {
         console.error("위치 초기화 실패:", error);
@@ -71,6 +79,18 @@ const LocationTracker: React.FC = () => {
     }
   };
 
+  const fetchWeatherData = async (lat: number, lot: number) => {
+    try {
+      setIsLoadingWeather(true);
+      const weatherData = await fetchTodayWeather(lat, lot);
+      setWeather(weatherData);
+    } catch (error) {
+      console.error("날씨 데이터 조회 실패:", error);
+    } finally {
+      setIsLoadingWeather(false);
+    }
+  };
+
   const onRegionChange = (newRegion: Location) => {
     setLocation(newRegion);
   };
@@ -90,9 +110,16 @@ const LocationTracker: React.FC = () => {
     setIsBottomSheetVisible(!isBottomSheetVisible);
   };
 
-  const refreshShelters = async () => {
+  const toggleWeatherModal = () => {
+    setIsWeatherModalVisible(!isWeatherModalVisible);
+  };
+
+  const refreshData = async () => {
     if (location.latitude !== 37.5665 && location.longitude !== 126.978) {
-      await fetchNearbySheltersData(location.latitude, location.longitude);
+      await Promise.all([
+        fetchNearbySheltersData(location.latitude, location.longitude),
+        fetchWeatherData(location.latitude, location.longitude)
+      ]);
     }
   };
 
@@ -124,6 +151,11 @@ const LocationTracker: React.FC = () => {
         ))}
       </MapView>
 
+      {/* 날씨 버튼 */}
+      <TouchableOpacity style={styles.weatherButton} onPress={toggleWeatherModal}>
+        <Text style={styles.weatherButtonText}>{isLoadingWeather ? "로딩 중..." : "🌤️ 날씨"}</Text>
+      </TouchableOpacity>
+
       {/* 쉼터 버튼 */}
       <TouchableOpacity style={styles.shelterButton} onPress={toggleBottomSheet}>
         <Text style={styles.shelterButtonText}>
@@ -132,7 +164,7 @@ const LocationTracker: React.FC = () => {
       </TouchableOpacity>
 
       {/* 새로고침 버튼 */}
-      <TouchableOpacity style={styles.refreshButton} onPress={refreshShelters}>
+      <TouchableOpacity style={styles.refreshButton} onPress={refreshData}>
         <Text style={styles.refreshButtonText}>🔄</Text>
       </TouchableOpacity>
 
@@ -142,6 +174,13 @@ const LocationTracker: React.FC = () => {
         isVisible={isBottomSheetVisible}
         onClose={() => setIsBottomSheetVisible(false)}
         onShelterPress={onShelterPress}
+      />
+
+      {/* 날씨 상세 모달 */}
+      <WeatherDetailModal
+        weather={weather}
+        isVisible={isWeatherModalVisible}
+        onClose={() => setIsWeatherModalVisible(false)}
       />
     </View>
   );
@@ -153,6 +192,28 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1
+  },
+  weatherButton: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+    backgroundColor: "#FF9800",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  weatherButtonText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "600"
   },
   shelterButton: {
     position: "absolute",
@@ -178,7 +239,7 @@ const styles = StyleSheet.create({
   },
   refreshButton: {
     position: "absolute",
-    top: 50,
+    top: 120,
     left: 20,
     backgroundColor: "white",
     paddingHorizontal: 12,
