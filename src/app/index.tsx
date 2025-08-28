@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import LocationTracker from "../shared/components/LocationTracker";
+import { LocationTracker } from "../features/location";
 
 export default function HomeScreen() {
   return (
