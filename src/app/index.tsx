@@ -1,13 +1,7 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { LocationTracker } from "../features/location";
+import Login from "@moeum/features/user/login/Login";
 
-export default function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <LocationTracker />
-    </View>
-  );
+export default function LoginScreen() {
+  return <Login />;
 }
 
 const styles = StyleSheet.create({
