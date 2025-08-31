@@ -45,6 +45,7 @@ export default function Login() {
 
   const handleGuestLogin = () => {
     console.log("로그인 없이 둘러보기");
+    router.push("/home");
   };
 
   return (

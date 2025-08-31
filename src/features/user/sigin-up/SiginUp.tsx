@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -17,6 +17,9 @@ import FormInput from "./component/FormInput";
 import FormCheckBox from "./component/FormCheckBox";
 import BirthdayPicker from "./component/BirthdayPicker";
 import { useSignUp } from "@moeum/shared/services/mutations/useUser";
+import ModalComponent from "@moeum/common/components/Modal";
+import LogoIcon from "assets/icons/logo.svg";
+import { router } from "expo-router";
 
 export default function SignUp() {
   const methods = useForm({
@@ -41,7 +44,10 @@ export default function SignUp() {
     const { confirmPassword, ...payload } = data;
     signUp(payload);
     console.log(payload);
+    setModalVisible(true);
   };
+
+  const [isModalVisible, setModalVisible] = useState(false);
 
   return (
     <FormProvider {...methods}>
@@ -92,6 +98,27 @@ export default function SignUp() {
             </ScrollView>
             <Button title="가입하기" onPress={handleSubmit(onSubmit)} style={{ marginTop: 5 }} />
           </View>
+          {isModalVisible && (
+            <ModalComponent visible={isModalVisible} onClose={() => setModalVisible(false)}>
+              <View style={styles.modalContainer}>
+                <View>
+                  <Text style={styles.modalTitle}>회원가입 완료</Text>
+                  <LogoIcon width={100} height={100} />
+                </View>
+                <Text style={styles.modalText}>
+                  지금 바로 로그인 하고{"\n"}주변 대피소를 찾아보세요!
+                </Text>
+                <Button
+                  title="확인"
+                  onPress={() => {
+                    setModalVisible(false);
+                    router.push("/");
+                  }}
+                  style={styles.modalButton}
+                />
+              </View>
+            </ModalComponent>
+          )}
         </KeyboardAvoidingView>
       </SafeAreaView>
     </FormProvider>
@@ -107,5 +134,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between"
   },
   text: { lineHeight: 40, fontSize: 24, color: "#000" },
-  bold: { fontSize: 28, fontWeight: "bold" }
+  bold: { fontSize: 28, fontWeight: "bold" },
+  modalContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 2,
+    width: "100%",
+    gap: 16
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 17,
+    textAlign: "center"
+  },
+  modalText: {
+    fontSize: 18,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 7
+  },
+  modalButton: {
+    width: "100%",
+    backgroundColor: "#4A7DFF",
+    borderRadius: 8
+  }
 });

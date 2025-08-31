@@ -8,7 +8,13 @@ export default function RootLayout() {
     <SafeAreaProvider style={styles.container}>
       <QueryClientProvider client={queryClient}>
         <StatusBar barStyle="dark-content" />
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "white" } }}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: "none",
+            contentStyle: { backgroundColor: "white" }
+          }}
+        >
           <Stack.Screen name="index" options={{ title: "LoginScreen" }} />
         </Stack>
       </QueryClientProvider>
