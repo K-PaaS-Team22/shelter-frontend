@@ -19,19 +19,27 @@ export default {
     },
 
     ios: {
-      bundleIdentifier: "com.kr.moeum",
+      bundleIdentifier: "com.shelter.frontend.dev",
       buildNumber: "1",
       supportsTablet: true,
       entitlements: {
         "com.apple.developer.networking.wifi-info": true
+      },
+      config: {
+        googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY_IOS
       }
     },
     android: {
-      package: "co.kr.moeum",
+      package: "com.shelter.frontend.dev",
       versionCode: 1,
       adaptiveIcon: {
         foregroundImage: "./assets/images/adaptive-icon.png",
         backgroundColor: "#ffffff"
+      },
+      config: {
+        googleMaps: {
+          apiKey: process.env.GOOGLE_MAPS_API_KEY_ANDROID
+        }
       }
     },
     plugins: [
@@ -59,8 +67,12 @@ export default {
       },
       eas: {
         projectId: "f345cdac-62b0-41d8-b7a4-5450aca69da5"
+      },
+      googleMapsApiKey: {
+        ios: process.env.GOOGLE_MAPS_API_KEY_IOS,
+        android: process.env.GOOGLE_MAPS_API_KEY_ANDROID
       }
     },
-    owner: "moeum"
+    owner: "hyun907"
   }
 };

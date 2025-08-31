@@ -4,3 +4,9 @@ import SignUp from "@moeum/features/user/sigin-up/SiginUp";
 export default function LoginScreen() {
   return <Login />;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
