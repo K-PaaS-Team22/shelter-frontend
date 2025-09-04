@@ -10,12 +10,14 @@ export default {
     scheme: "myapp",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+
     runtimeVersion: {
       policy: "sdkVersion"
     },
     updates: {
       url: "https://u.expo.dev/f345cdac-62b0-41d8-b7a4-5450aca69da5"
     },
+
     ios: {
       bundleIdentifier: "com.shelter.frontend.dev",
       buildNumber: "1",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import LogoIcon from "assets/icons/logo.svg";
 import { router } from "expo-router";
 import {
@@ -11,21 +11,31 @@ import {
   Platform,
   ScrollView
 } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import Input from "@moeum/common/components/Input";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@moeum/common/components/Button";
+import { useLogin } from "@moeum/shared/services/mutations/useUser";
+import { loginSchema } from "@moeum/shared/services/schemas/loginSchema";
+import FormInput from "../sigin-up/component/FormInput";
 
 export default function Login() {
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const methods = useForm({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      memberId: "",
+      memberPassword: ""
+    }
+  });
+  const { handleSubmit } = methods;
 
-  const handleLogin = async () => {
-    setIsLoggingIn(true);
-    console.log("로그인 시도:", id, password);
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    console.log("로그인 완료!");
-    setIsLoggingIn(false);
+  const { mutate: login } = useLogin(() => {
+    console.log("로그인 성공");
+    router.push("/home");
+  });
+
+  const onSubmit = (data: any) => {
+    login(data);
+    console.log(data);
   };
 
   const handleSignUp = () => {
@@ -35,62 +45,59 @@ export default function Login() {
 
   const handleGuestLogin = () => {
     console.log("로그인 없이 둘러보기");
+    router.push("/home");
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{ flex: 1 }}
-      >
-        <ScrollView
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+    <FormProvider {...methods}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
         >
-          <View style={{ gap: 26 }}>
-            <View style={styles.logoContainer}>
-              <LogoIcon width={90} height={106} />
-              <Text style={styles.logoText}>LOGO</Text>
-            </View>
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={{ gap: 26 }}>
+              <View style={styles.logoContainer}>
+                <LogoIcon width={90} height={106} />
+                <Text style={styles.logoText}>LOGO</Text>
+              </View>
 
-            <View style={{ width: "100%", gap: 12, marginTop: 20 }}>
-              <Input
-                Icon={() => (
-                  <MaterialCommunityIcons name="account-outline" size={20} color="#BEC1D1" />
-                )}
-                placeholder="아이디"
-                value={id}
-                onChangeText={setId}
-              />
-              <Input
-                Icon={() => (
-                  <MaterialCommunityIcons name="lock-outline" size={20} color="#BEC1D1" />
-                )}
-                placeholder="비밀번호"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
-              />
-            </View>
+              <View style={{ width: "100%", gap: 15, marginTop: 20 }}>
+                <FormInput
+                  name="memberId"
+                  placeholder="아이디 입력 (8~16자)"
+                  iconName="account-outline"
+                />
+                <FormInput
+                  name="memberPassword"
+                  placeholder="비밀번호 입력 (8~16자)"
+                  iconName="lock-outline"
+                  secure
+                />
+              </View>
 
-            <View style={{ width: "100%", gap: 12, marginTop: 20 }}>
-              <Button title="로그인" onPress={handleLogin} />
-              <Button
-                title="회원가입"
-                onPress={handleSignUp}
-                style={{ backgroundColor: "#F1F4F8" }}
-                textStyle={{ color: "#65686F" }}
-              />
-            </View>
+              <View style={{ width: "100%", gap: 12, marginTop: 20 }}>
+                <Button title="로그인" onPress={handleSubmit(onSubmit)} />
+                <Button
+                  title="회원가입"
+                  onPress={handleSignUp}
+                  style={{ backgroundColor: "#F1F4F8" }}
+                  textStyle={{ color: "#65686F" }}
+                />
+              </View>
 
-            <TouchableOpacity onPress={handleGuestLogin} style={{ marginTop: 20 }}>
-              <Text style={styles.guestLoginText}>로그인 없이 둘러보기</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+              <TouchableOpacity onPress={handleGuestLogin} style={{ marginTop: 20 }}>
+                <Text style={styles.guestLoginText}>로그인 없이 둘러보기</Text>
+              </TouchableOpacity>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </FormProvider>
   );
 }
 
