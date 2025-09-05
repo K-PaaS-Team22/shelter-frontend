@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
+import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 interface HeaderProps {
@@ -9,8 +9,6 @@ interface HeaderProps {
 }
 
 export default function Header({ title }: HeaderProps) {
-  const router = useRouter();
-
   const handleBack = () => {
     router.back();
   };

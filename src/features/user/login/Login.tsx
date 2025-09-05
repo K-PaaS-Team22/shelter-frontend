@@ -30,7 +30,7 @@ export default function Login() {
 
   const { mutate: login } = useLogin(() => {
     console.log("로그인 성공");
-    router.push("/home");
+    router.push("/map");
   });
 
   const onSubmit = (data: any) => {
@@ -45,7 +45,7 @@ export default function Login() {
 
   const handleGuestLogin = () => {
     console.log("로그인 없이 둘러보기");
-    router.push("/home");
+    router.push("/map");
   };
 
   return (

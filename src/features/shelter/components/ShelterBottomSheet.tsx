@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from "react-native";
 import { Shelter } from "../types/shelter";
+import { router } from "expo-router";
 
 interface ShelterBottomSheetProps {
   shelters: Shelter[];
@@ -18,9 +19,18 @@ const ShelterBottomSheet: React.FC<ShelterBottomSheetProps> = ({
   onShelterPress
 }) => {
   if (!isVisible) return null;
+  const handlePress = (shelter: Shelter) => {
+    if (onShelterPress) onShelterPress(shelter);
+    router.push({
+      pathname: "/detail",
+      params: {
+        shelter: JSON.stringify(shelter)
+      }
+    });
+  };
 
   const renderShelterItem = ({ item }: { item: Shelter }) => (
-    <TouchableOpacity style={styles.shelterItem} onPress={() => onShelterPress(item)}>
+    <TouchableOpacity style={styles.shelterItem} onPress={() => handlePress(item)}>
       <Text style={styles.shelterName}>{item.RSTR_NM}</Text>
       <Text style={styles.shelterAddress}>
         {item.RN_DTL_ADRES} {item.DTL_ADRES}
