@@ -9,6 +9,10 @@ export interface Shelter {
   USE_PSBL_NMPR: number;
   LO: number; // 경도
   LA: number; // 위도
+  UTZTN_PSBLTY_TNOP: number;
+  WKDY_OPER_BGNG_HR: string;
+  REARE_NM: string;
+  WKDY_OPER_END_HR: string;
   WKDAY_OPER_BEGIN_TIME: string;
   WKDAY_OPER_END_TIME: string;
   WKEND_HDAY_OPER_BEGIN_TIME: string | null;
